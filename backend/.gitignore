@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+
+# Dependency directories
+bower_components/
+
+# Build output
+dist/
+build/
+
+# Optional: coverage reports (e.g., for testing)
+coverage/
+
+# Optional: next.js frontend build if linked
+.next/
+out/
