@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+// import axios from "axios";
 
 const ExpenseForm = ({ tourId, members, onExpenseAdded }) => {
   const [amount, setAmount] = useState("");
@@ -32,35 +32,35 @@ const ExpenseForm = ({ tourId, members, onExpenseAdded }) => {
     setSelectAll(!selectAll);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post(
-        `/api/expenses`,
-        {
-          tourId,
-          amount,
-          purpose,
-          splitWith: selectedMembers,
-        },
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const res = await axios.post(
+  //       `/api/expenses`,
+  //       {
+  //         tourId,
+  //         amount,
+  //         purpose,
+  //         splitWith: selectedMembers,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: token,
+  //         },
+  //       }
+  //     );
 
-      setAmount("");
-      setPurpose("");
-      setSelectedMembers([]);
-      setSelectAll(false);
-      onExpenseAdded(res.data); // callback to update parent state
-    } catch (err) {
-      console.error("Error adding expense", err);
-    }
-  };
+  //     setAmount("");
+  //     setPurpose("");
+  //     setSelectedMembers([]);
+  //     setSelectAll(false);
+  //     onExpenseAdded(res.data); // callback to update parent state
+  //   } catch (err) {
+  //     console.error("Error adding expense", err);
+  //   }
+  // };
 
   return (
     <form
