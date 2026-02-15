@@ -1,77 +1,144 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../utils/api";
 import Navbar from "../components/Navbar";
 
-export default function CreateTourPage() {
-  const [form, setForm] = useState({
+const CreateTourPage = () => {
+  const [formData, setFormData] = useState({
     name: "",
     description: "",
-    location: "",
+    destination: "",
     startDate: "",
     endDate: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:5000/api/tours/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token"),
-      },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    if (data.tour) navigate("/dashboard");
-    else alert(data.message);
+    setError("");
+
+    if (new Date(formData.endDate) <= new Date(formData.startDate)) {
+      setError("End date must be after start date");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await api.post("/tours", formData);
+      navigate(`/tour/${response.data.tour._id}`);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to create tour");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
-      {/* <Navbar /> */}
-      <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow rounded">
-        <h2 className="text-xl font-bold mb-4">Create New Tour</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            name="name"
-            placeholder="Tour Name"
-            className="w-full mb-2 p-2 border"
-            onChange={handleChange}
-          />
-          <input
-            name="location"
-            placeholder="Location"
-            className="w-full mb-2 p-2 border"
-            onChange={handleChange}
-          />
-          <input
-            name="startDate"
-            type="date"
-            className="w-full mb-2 p-2 border"
-            onChange={handleChange}
-          />
-          <input
-            name="endDate"
-            type="date"
-            className="w-full mb-2 p-2 border"
-            onChange={handleChange}
-          />
-          <textarea
-            name="description"
-            placeholder="Description"
-            className="w-full mb-4 p-2 border"
-            onChange={handleChange}
-          />
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
-            Create Tour
-          </button>
-        </form>
+      <Navbar />
+      <div className="container pt-8 pb-8 max-w-2xl">
+        <h1 className="page-title mb-8">Create New Tour</h1>
+
+        <div className="card">
+          {error && <div className="alert alert-error">{error}</div>}
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="form-label">Tour Name *</label>
+              <input
+                type="text"
+                name="name"
+                className="form-control"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                placeholder="e.g., Goa Trip 2024"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Description</label>
+              <textarea
+                name="description"
+                className="form-control"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Add details about your tour..."
+                rows={3}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Destination *</label>
+              <input
+                type="text"
+                name="destination"
+                className="form-control"
+                value={formData.destination}
+                onChange={handleChange}
+                required
+                placeholder="e.g., Goa, India"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="form-group">
+                <label className="form-label">Start Date *</label>
+                <input
+                  type="date"
+                  name="startDate"
+                  className="form-control"
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">End Date *</label>
+                <input
+                  type="date"
+                  name="endDate"
+                  className="form-control"
+                  value={formData.endDate}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-4 justify-end mt-8">
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                className="btn btn-outline"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? "Creating..." : "Create Tour"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );
-}
+};
+
+export default CreateTourPage;

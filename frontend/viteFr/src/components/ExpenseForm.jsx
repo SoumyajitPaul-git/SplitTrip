@@ -1,122 +1,188 @@
-import React, { useState, useEffect } from "react";
-// import axios from "axios";
+import { useState } from "react";
 
-const ExpenseForm = ({ tourId, members, onExpenseAdded }) => {
-  const [amount, setAmount] = useState("");
-  const [purpose, setPurpose] = useState("");
-  const [selectedMembers, setSelectedMembers] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+const ExpenseForm = ({ members, onSubmit, onCancel }) => {
+  const [formData, setFormData] = useState({
+    description: "",
+    amount: "",
+    category: "other",
+    paidBy: "",
+    participants: [],
+    splitType: "equal",
+  });
 
-  useEffect(() => {
-    // Optionally fetch current user from local storage or backend
-    const user = JSON.parse(localStorage.getItem("user"));
-    setCurrentUser(user);
-  }, []);
+  const [error, setError] = useState("");
 
-  const toggleMember = (memberId) => {
-    setSelectedMembers((prev) =>
-      prev.includes(memberId)
-        ? prev.filter((id) => id !== memberId)
-        : [...prev, memberId]
-    );
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedMembers([]);
-    } else {
-      const allIds = members.map((m) => m._id);
-      setSelectedMembers(allIds);
+  const handleParticipantToggle = (memberId) => {
+    setFormData((prev) => {
+      const isSelected = prev.participants.includes(memberId);
+      return {
+        ...prev,
+        participants: isSelected
+          ? prev.participants.filter((id) => id !== memberId)
+          : [...prev.participants, memberId],
+      };
+    });
+  };
+
+  const selectAllParticipants = () => {
+    setFormData((prev) => ({
+      ...prev,
+      participants: members.map((m) => m.user._id),
+    }));
+  };
+
+  const clearParticipants = () => {
+    setFormData((prev) => ({
+      ...prev,
+      participants: [],
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!formData.description.trim()) {
+      setError("Description is required");
+      return;
     }
-    setSelectAll(!selectAll);
+
+    if (!formData.amount || formData.amount <= 0) {
+      setError("Amount must be greater than 0");
+      return;
+    }
+
+    if (!formData.paidBy) {
+      setError("Please select who paid");
+      return;
+    }
+
+    if (formData.participants.length === 0) {
+      setError("Please select at least one participant");
+      return;
+    }
+
+    onSubmit({
+      ...formData,
+      amount: parseFloat(formData.amount),
+    });
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     const res = await axios.post(
-  //       `/api/expenses`,
-  //       {
-  //         tourId,
-  //         amount,
-  //         purpose,
-  //         splitWith: selectedMembers,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: token,
-  //         },
-  //       }
-  //     );
-
-  //     setAmount("");
-  //     setPurpose("");
-  //     setSelectedMembers([]);
-  //     setSelectAll(false);
-  //     onExpenseAdded(res.data); // callback to update parent state
-  //   } catch (err) {
-  //     console.error("Error adding expense", err);
-  //   }
-  // };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md space-y-4"
-    >
-      <h2 className="text-lg font-semibold mb-2">Add Expense</h2>
+    <form onSubmit={handleSubmit}>
+      {error && <div className="alert alert-error">{error}</div>}
 
-      <input
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="Amount"
-        required
-        className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
-      />
+      <div className="form-group">
+        <label className="form-label">Description *</label>
+        <input
+          type="text"
+          name="description"
+          className="form-control"
+          value={formData.description}
+          onChange={handleChange}
+          placeholder="e.g., Dinner at restaurant"
+        />
+      </div>
 
-      <input
-        type="text"
-        value={purpose}
-        onChange={(e) => setPurpose(e.target.value)}
-        placeholder="Purpose"
-        required
-        className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
-      />
+      <div className="form-group">
+        <label className="form-label">Amount (₹) *</label>
+        <input
+          type="number"
+          name="amount"
+          className="form-control"
+          value={formData.amount}
+          onChange={handleChange}
+          step="0.01"
+          min="0"
+          placeholder="0.00"
+        />
+      </div>
 
-      <div className="mt-2">
-        <label className="font-semibold text-sm mb-1 block">Split With:</label>
-        <div className="flex flex-wrap gap-2">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={selectAll}
-              onChange={handleSelectAll}
-            />
-            All
-          </label>
+      <div className="form-group">
+        <label className="form-label">Category</label>
+        <select
+          name="category"
+          className="form-control"
+          value={formData.category}
+          onChange={handleChange}
+        >
+          <option value="food">Food</option>
+          <option value="transport">Transport</option>
+          <option value="accommodation">Accommodation</option>
+          <option value="entertainment">Entertainment</option>
+          <option value="shopping">Shopping</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label className="form-label">Paid By *</label>
+        <select
+          name="paidBy"
+          className="form-control"
+          value={formData.paidBy}
+          onChange={handleChange}
+        >
+          <option value="">Select member</option>
           {members.map((member) => (
-            <label key={member._id} className="flex items-center gap-2 text-sm">
+            <option key={member.user._id} value={member.user._id}>
+              {member.user.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="form-group">
+        <div className="flex justify-between items-center mb-2">
+          <label className="form-label mb-0">Split Among *</label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={selectAllParticipants}
+              className="btn btn-sm text-xs px-2 py-1"
+            >
+              Select All
+            </button>
+            <button
+              type="button"
+              onClick={clearParticipants}
+              className="btn btn-sm text-xs px-2 py-1"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div className="checkbox-list">
+          {members.map((member) => (
+            <label key={member.user._id} className="checkbox-item">
               <input
                 type="checkbox"
-                checked={selectedMembers.includes(member._id)}
-                onChange={() => toggleMember(member._id)}
+                checked={formData.participants.includes(member.user._id)}
+                onChange={() => handleParticipantToggle(member.user._id)}
               />
-              {member.name}
+              <span>{member.user.name}</span>
             </label>
           ))}
         </div>
       </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-md"
-      >
-        Add Expense
-      </button>
+      <div className="modal-footer p-0 border-0 mt-6">
+        <button type="button" onClick={onCancel} className="btn btn-outline">
+          Cancel
+        </button>
+        <button type="submit" className="btn btn-primary">
+          Add Expense
+        </button>
+      </div>
     </form>
   );
 };

@@ -1,16 +1,26 @@
 import express from "express";
 import {
   createTour,
+  getTours,
+  getTour,
   joinTour,
-  getUserTours,
+  updateTourStatus,
+  getTourReport,
 } from "../controllers/tourController.js";
-import verifyToken from "../middleware/authMiddleware.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", verifyToken, createTour);
-router.get("/join/:link", verifyToken, joinTour);
-router.get("/my-tours", verifyToken, getUserTours);
-router.get("/:tourId/report", verifyToken, getTourReport);
+router.use(protect);
+
+router.route("/").get(getTours).post(createTour);
+
+router.route("/:id").get(getTour);
+
+router.route("/join/:joinCode").post(joinTour);
+
+router.route("/:id/status").patch(updateTourStatus);
+
+router.route("/:id/report").get(getTourReport);
 
 export default router;
