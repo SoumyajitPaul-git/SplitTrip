@@ -1,4 +1,4 @@
-# ✈️ SplitTrip — Group Tour Expense Tracker & Splitter
+# SplitTrip - Group Tour Expense Tracker
 
 <div align="center">
   <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge" />
@@ -7,134 +7,309 @@
   <img src="https://img.shields.io/badge/Database-MongoDB-green?style=for-the-badge&logo=mongodb" />
 </div>
 
-> A hassle-free way to split expenses, track payments, and finalize balances after a tour — all in one elegant interface.
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://split-trip-frontend.vercel.app)
+
+A full-stack web application for tracking and settling group tour expenses. Perfect for friends traveling together who want to easily split costs and settle payments.
+
+## 📸 Application Preview
+
+
+### 📊 Dashboard & Tour Management
+
+<p align="center">
+  <img src="./assets/screenshots/dashboard.png" width="800" />
+</p>
+<p align="center"><b>Dashboard — View & Manage Tours</b></p>
 
 ---
 
-## 📸 Preview
+### 💵 Expense Tracking
 
-> Coming Soon: Screenshots and demo GIFs of the UI, final report, and expense flow.
+<p align="center">
+  <img src="./assets/screenshots/tour-details.png" width="800" />
+</p>
+<p align="center"><b>Tour Details — Add & Track Expenses</b></p>
 
 ---
+
+### 📈 Final Settlement Report
+
+<p align="center">
+  <img src="./assets/screenshots/report.png" width="800" />
+</p>
+<p align="center"><b>Optimized Settlement & Balance Summary</b></p>
+
 
 ## 🌟 Key Features
 
-- 🔐 **User Auth** – Register/Login with secure JWT tokens
-- 🧳 **Tour Dashboard** – Create or join tours with members and dates
-- 💵 **Expense Manager** – Add expenses, auto split between selected members
-- 📊 **Final Report** – Shows who paid how much, who owes whom, and net balance
-- ✉️ **Invite Link** – Let friends join a tour via a link
-- 🔒 **Protected APIs** – Using middleware for secured access
+### 🔐 Authentication
+
+- Secure user registration & login  
+- JWT-based authentication  
+- Protected API routes  
+- Password hashing with bcrypt  
 
 ---
 
-## 🗂 Project Structure
+### 🧳 Tour Management
 
-```
-SplitTrip/
-│
-├── frontend/               # React-based frontend
-│   └── ...
-│
-├── backend/                # Node.js + Express backend
-│   ├── models/             # Mongoose models: User, Tour, Expense
-│   ├── routes/             # API routes: /auth, /tours, /expenses
-│   ├── middleware/         # Auth middleware (JWT verification)
-│   └── server.js           # Server entry point
-│
-├── .gitignore
-└── README.md
-```
+- Create tours with destination, dates, and description  
+- Unique 8-character join codes (generated via nanoid)  
+- Join tours using invite code  
+- Tour Captain privileges  
 
 ---
 
-## ⚙️ Tech Stack
+### 💵 Expense Management
 
-| Layer        | Technology              |
-|--------------|--------------------------|
-| Frontend     | React.js (Vite/CRA)      |
-| Backend      | Node.js, Express.js      |
-| Database     | MongoDB with Mongoose    |
-| Auth         | JWT (JSON Web Tokens)    |
-| Dev Tools    | Nodemon, dotenv, CORS    |
+- Add expenses with:
+  - Category  
+  - Amount  
+  - Payer  
+  - Participants  
+- Equal split among selected members  
+- Real-time updates during tour  
 
 ---
 
-## 🚀 Getting Started
+### 📊 Settlement & Reports
 
-### 1. Clone the Repo
+- Total tour budget  
+- Per-person share  
+- Paid vs Owed breakdown  
+- Optimized settlement instructions  
+- Category-wise expense summary  
+- Complete expense history  
 
-```bash
-git clone https://github.com/SoumyajitPaul-git/SplitTrip.git
-cd SplitTrip
+---
+
+## 🧠 Settlement Algorithm
+
+SplitTrip uses a **greedy optimization algorithm**:
+
+1. Calculate each member’s net balance  
+2. Separate creditors & debtors  
+3. Match largest creditor with largest debtor  
+4. Minimize total number of transactions  
+
+This reduces complexity from **O(n²)** to approximately **O(n log n)**.
+
+---
+
+## 🏗 Tech Stack
+
+### Backend
+
+- Node.js  
+- Express.js  
+- MongoDB (Mongoose ODM)  
+- JWT Authentication  
+- bcrypt  
+- nanoid  
+- CORS  
+- dotenv  
+
+---
+
+### Frontend
+
+- React (Hooks)  
+- React Router v6  
+- Axios  
+- Vite  
+- TailwindCSS  
+- date-fns  
+
+---
+
+### Deployment
+
+- Frontend → Vercel  
+- Backend → Render  
+- Database → MongoDB Atlas  
+
+## Project Structure
+
+```
+soumyajitpaul-git-splittrip/
+│
+├── backend/                 (Express.js API - MVC)
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   └── routes/
+│
+└── frontend/
+    └── viteFr/              (React + Vite)
+        └── src/
+            ├── components/
+            ├── contexts/
+            ├── pages/
+            └── utils/
+
 ```
 
-### 2. Setup Backend
+## Installation & Setup
 
+### Prerequisites
+- Node.js (v16 or higher)
+- MongoDB (local or Atlas)
+
+### Backend Setup
+
+1. Navigate to backend directory:
 ```bash
 cd backend
+```
+
+2. Install dependencies:
+```bash
 npm install
 ```
 
-🔐 Create a `.env` file in `backend/`:
-
-```
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_super_secret_key
+3. Create `.env` file from example:
+```bash
+cp .env.example .env
 ```
 
-Then run:
+4. Configure environment variables in `.env`:
+```env
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/splittrip
+JWT_SECRET=your_secret_key_here_change_in_production
+JWT_EXPIRE=30d
+FRONTEND_URL=http://localhost:5173
+```
 
+5. Start the server:
+```bash
+# Development mode with auto-reload
+npm run dev
+
+# Production mode
+npm start
+```
+
+Server will run on `http://localhost:5000`
+
+### Frontend Setup
+
+1. Navigate to frontend directory:
+```bash
+cd frontend/viteFr
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start development server:
 ```bash
 npm run dev
 ```
 
-### 3. Setup Frontend
+Frontend will run on `http://localhost:5173`
 
-```bash
-cd ../frontend
-npm install
-npm start
-```
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/signup` - Register new user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/me` - Get current user (protected)
+
+### Tours
+- `GET /api/tours` - Get all tours for user (protected)
+- `POST /api/tours` - Create new tour (protected)
+- `GET /api/tours/:id` - Get tour details (protected)
+- `POST /api/tours/join/:joinCode` - Join tour with code (protected)
+- `PATCH /api/tours/:id/status` - Update tour status (captain only)
+- `GET /api/tours/:id/report` - Get settlement report (protected)
+
+### Expenses
+- `POST /api/expenses` - Create expense (protected)
+- `GET /api/expenses/tour/:tourId` - Get tour expenses (protected)
+- `GET /api/expenses/:id` - Get single expense (protected)
+- `PUT /api/expenses/:id` - Update expense (creator/captain only)
+- `DELETE /api/expenses/:id` - Delete expense (creator/captain only)
+
+## Usage Workflow
+
+1. **Sign Up / Login**
+   - Create account or login with existing credentials
+
+2. **Create a Tour**
+   - Click "Create New Tour"
+   - Fill in tour details (name, destination, dates)
+   - System generates unique 8-character join code
+
+3. **Invite Members**
+   - Share the join code with tour members
+   - Members use "Join Tour" to enter
+
+4. **Track Expenses**
+   - Add expenses as they occur
+   - Select payer and participants for each expense
+   - Categorize expenses (food, transport, accommodation, etc.)
+
+5. **View Reports**
+   - Click "View Report" anytime during or after tour
+   - See total expenses, category breakdown
+   - View individual balances
+   - Get optimized settlement instructions
+
+6. **Settle Payments**
+   - Follow settlement instructions to minimize transactions
+   - Complete payments outside the app
+
+## Settlement Algorithm
+
+The app uses a greedy algorithm to minimize the number of transactions needed:
+
+1. Calculate net balance for each member (amount paid - share owed)
+2. Separate members into creditors (to receive) and debtors (to pay)
+3. Match largest creditor with largest debtor
+4. Settle the smaller amount
+5. Repeat until all balanced
+
+This reduces complexity from O(n²) to approximately O(n log n) transactions.
+
+## Security Features
+
+- Passwords hashed with bcrypt
+- JWT-based authentication
+- Protected routes require valid token
+- Authorization checks for sensitive operations
+- Input validation on all forms
+
+## Future Enhancements
+
+- [ ] Custom split ratios (not just equal)
+- [ ] Receipt image uploads
+- [ ] Export reports to PDF
+- [ ] Email notifications
+- [ ] Multi-currency support
+- [ ] Payment integration (UPI, PayPal)
+- [ ] Expense editing history
+- [ ] Tour templates
+- [ ] Mobile app
+
+## Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For issues or questions, please open an issue on GitHub.
 
 ---
 
-## 📈 Final Report (Auto Calculated)
-
-The **Tour Report** shows:
-
-- ✅ **Total Tour Budget**
-- 💰 **Per Person Share**
-- 💳 **How much each member paid**
-- 🧾 **How much they owe or are owed**
-
----
-
-## ✅ Sample API Routes
-
-- `POST /api/auth/register` – Register user  
-- `POST /api/auth/login` – Login user  
-- `POST /api/tours/create` – Create new tour  
-- `POST /api/expenses/add` – Add new expense  
-
-_All protected routes require Authorization header with JWT token._
-
----
-
-## 🧪 Testing the API
-
-Use Postman or Thunder Client to test endpoints with headers:
-
-```
-Authorization: Bearer <your_jwt_token>
-Content-Type: application/json
-```
-
----
-
-## 📝 License
-
-MIT License.  
-Made with ❤️ by [Soumyajit Paul](https://github.com/SoumyajitPaul-git)
-
----
+Built with ❤️ for travelers who hate complicated expense splitting
