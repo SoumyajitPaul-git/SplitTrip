@@ -77,42 +77,49 @@ const ExpenseForm = ({ members, onSubmit, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <div className="alert alert-error">{error}</div>}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {error && (
+        <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
 
-      <div className="form-group">
-        <label className="form-label">Description *</label>
+      {/* Description */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Description *</label>
         <input
           type="text"
           name="description"
-          className="form-control"
           value={formData.description}
           onChange={handleChange}
           placeholder="e.g., Dinner at restaurant"
+          className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-rose-500 focus:outline-none transition"
         />
       </div>
 
-      <div className="form-group">
-        <label className="form-label">Amount (₹) *</label>
+      {/* Amount */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Amount (₹) *</label>
         <input
           type="number"
           name="amount"
-          className="form-control"
           value={formData.amount}
           onChange={handleChange}
           step="0.01"
           min="0"
           placeholder="0.00"
+          className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-rose-500 focus:outline-none transition"
         />
       </div>
 
-      <div className="form-group">
-        <label className="form-label">Category</label>
+      {/* Category */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Category</label>
         <select
           name="category"
-          className="form-control"
           value={formData.category}
           onChange={handleChange}
+          className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-rose-500 focus:outline-none transition bg-white"
         >
           <option value="food">Food</option>
           <option value="transport">Transport</option>
@@ -123,13 +130,14 @@ const ExpenseForm = ({ members, onSubmit, onCancel }) => {
         </select>
       </div>
 
-      <div className="form-group">
-        <label className="form-label">Paid By *</label>
+      {/* Paid By */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Paid By *</label>
         <select
           name="paidBy"
-          className="form-control"
           value={formData.paidBy}
           onChange={handleChange}
+          className="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-rose-500 focus:outline-none transition bg-white"
         >
           <option value="">Select member</option>
           {members.map((member) => (
@@ -140,51 +148,75 @@ const ExpenseForm = ({ members, onSubmit, onCancel }) => {
         </select>
       </div>
 
-      <div className="form-group">
-        <div className="flex justify-between items-center mb-2">
-          <label className="form-label mb-0">Split Among *</label>
-          <div className="flex gap-2">
+      {/* Participants */}
+      <div>
+        <div className="flex justify-between items-center mb-3">
+          <label className="text-sm font-medium">Split Among *</label>
+
+          <div className="flex gap-3 text-xs">
             <button
               type="button"
               onClick={selectAllParticipants}
-              className="btn btn-sm text-xs px-2 py-1"
+              className="text-rose-600 hover:underline"
             >
               Select All
             </button>
             <button
               type="button"
               onClick={clearParticipants}
-              className="btn btn-sm text-xs px-2 py-1"
+              className="text-gray-500 hover:underline"
             >
               Clear
             </button>
           </div>
         </div>
 
-        <div className="checkbox-list">
-          {members.map((member) => (
-            <label key={member.user._id} className="checkbox-item">
-              <input
-                type="checkbox"
-                checked={formData.participants.includes(member.user._id)}
-                onChange={() => handleParticipantToggle(member.user._id)}
-              />
-              <span>{member.user.name}</span>
-            </label>
-          ))}
+        <div className="grid grid-cols-2 gap-3">
+          {members.map((member) => {
+            const selected = formData.participants.includes(member.user._id);
+
+            return (
+              <label
+                key={member.user._id}
+                className={`flex items-center gap-3 border rounded-xl px-4 py-2 cursor-pointer transition ${
+                  selected
+                    ? "border-rose-500 bg-rose-50"
+                    : "border-gray-200 hover:border-gray-400"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selected}
+                  onChange={() => handleParticipantToggle(member.user._id)}
+                  className="accent-rose-500"
+                />
+                <span className="text-sm">{member.user.name}</span>
+              </label>
+            );
+          })}
         </div>
       </div>
 
-      <div className="modal-footer p-0 border-0 mt-6">
-        <button type="button" onClick={onCancel} className="btn btn-outline">
+      {/* Footer Buttons */}
+      <div className="flex justify-end gap-4 pt-4 border-t">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-5 py-2 border rounded-lg hover:bg-gray-50 transition"
+        >
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary">
+
+        <button
+          type="submit"
+          className="px-5 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition"
+        >
           Add Expense
         </button>
       </div>
     </form>
   );
+
 };
 
 export default ExpenseForm;

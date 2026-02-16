@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { Eye, EyeOff } from "lucide-react";
+
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +14,10 @@ const SignupPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  
   const { signup } = useAuth();
   const navigate = useNavigate();
 
@@ -49,80 +55,123 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h1 className="auth-title">Create Account</h1>
-        <p className="auth-subtitle">Start tracking your tour expenses</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
+          <p className="text-gray-500 mt-2">
+            Start tracking your tour expenses
+          </p>
+        </div>
 
-        {error && <div className="alert alert-error">{error}</div>}
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm border border-red-200">
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Name</label>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
             <input
               type="text"
               name="name"
-              className="form-control"
               value={formData.name}
               onChange={handleChange}
               required
               placeholder="John Doe"
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Email</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
               type="email"
               name="email"
-              className="form-control"
               value={formData.email}
               onChange={handleChange}
               required
               placeholder="your.email@example.com"
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="••••••••"
-              minLength={6}
-            />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                minLength={6}
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              className="form-control"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              placeholder="••••••••"
-            />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm Password
+            </label>
+
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           <button
             type="submit"
-            className="btn btn-primary btn-lg"
-            style={{ width: "100%" }}
             disabled={loading}
+            className="w-full py-3 rounded-full bg-rose-500 text-white font-medium hover:bg-rose-600 transition disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 
-        <div className="auth-link">
-          Already have an account? <Link to="/login">Login</Link>
-        </div>
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-indigo-600 font-medium hover:underline"
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

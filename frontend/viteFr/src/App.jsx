@@ -6,88 +6,100 @@ import DashboardPage from "./pages/DashboardPage";
 import CreateTourPage from "./pages/CreateTourPage";
 import TourDetailsPage from "./pages/TourDetailsPage";
 import FinalReportPage from "./pages/FinalReportPage";
-import "./App.css";
+import HomePage from "./pages/HomePage";
 
-// Protected Route Component
+/* Protected Route */
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div className="spinner"></div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="w-8 h-8 border-4 border-gray-200 border-t-rose-500 rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   return user ? children : <Navigate to="/login" />;
 };
 
-// Public Route Component (redirect to dashboard if logged in)
+/* Public Route */
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div className="spinner"></div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="w-8 h-8 border-4 border-gray-200 border-t-rose-500 rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
-  return !user ? children : <Navigate to="/" />;
+  return !user ? children : <Navigate to="/profile" />;
 };
 
 function AppRoutes() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <PublicRoute>
-            <SignupPage />
-          </PublicRoute>
-        }
-      />
+    <div className="min-h-screen bg-white">
+      <Routes>
+        {/* Landing */}
+        <Route path="/" element={<HomePage />} />
 
-      {/* Protected Routes */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/create-tour"
-        element={
-          <ProtectedRoute>
-            <CreateTourPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/tour/:id"
-        element={
-          <ProtectedRoute>
-            <TourDetailsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/tour/:id/report"
-        element={
-          <ProtectedRoute>
-            <FinalReportPage />
-          </ProtectedRoute>
-        }
-      />
+        {/* Auth */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <SignupPage />
+            </PublicRoute>
+          }
+        />
 
-      {/* Catch all - redirect to dashboard */}
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        {/* Protected */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-tour"
+          element={
+            <ProtectedRoute>
+              <CreateTourPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tour/:id"
+          element={
+            <ProtectedRoute>
+              <TourDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tour/:id/report"
+          element={
+            <ProtectedRoute>
+              <FinalReportPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </div>
   );
 }
 

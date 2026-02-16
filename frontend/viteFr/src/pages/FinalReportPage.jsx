@@ -31,7 +31,9 @@ const FinalReportPage = () => {
     return (
       <>
         <Navbar />
-        <div className="spinner"></div>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="h-12 w-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
       </>
     );
   }
@@ -40,14 +42,16 @@ const FinalReportPage = () => {
     return (
       <>
         <Navbar />
-        <div className="container" style={{ paddingTop: "2rem" }}>
-          <div className="alert alert-error">{error || "Report not found"}</div>
-          <button
-            onClick={() => navigate(`/tour/${id}`)}
-            className="btn btn-primary"
-          >
-            Back to Tour
-          </button>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+          <div className="bg-white p-8 rounded-xl shadow-md text-center max-w-md w-full">
+            <p className="text-red-500 mb-4">{error || "Report not found"}</p>
+            <button
+              onClick={() => navigate(`/tour/${id}`)}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              Back to Tour
+            </button>
+          </div>
         </div>
       </>
     );
@@ -56,438 +60,198 @@ const FinalReportPage = () => {
   return (
     <>
       <Navbar />
-      <div
-        className="container"
-        style={{ paddingTop: "2rem", paddingBottom: "2rem" }}
-      >
-        {/* Header */}
-        <div style={{ marginBottom: "2rem" }}>
-          <button
-            onClick={() => navigate(`/tour/${id}`)}
-            className="btn btn-outline btn-sm"
-            style={{ marginBottom: "1rem" }}
-          >
-            ← Back to Tour
-          </button>
 
-          <h1 className="page-title">Final Settlement Report</h1>
-          <p style={{ color: "var(--gray-600)", fontSize: "1.125rem" }}>
-            {report.tour.name} • {report.tour.destination}
-          </p>
-        </div>
-
-        {/* Summary Cards */}
-        <div className="summary-grid">
-          <div className="summary-card">
-            <div className="summary-label">Total Expenses</div>
-            <div className="summary-value" style={{ color: "var(--primary)" }}>
-              ₹{report.summary.totalExpenses.toFixed(2)}
-            </div>
-          </div>
-
-          <div className="summary-card">
-            <div className="summary-label">Total Members</div>
-            <div className="summary-value">{report.summary.totalMembers}</div>
-          </div>
-
-          <div className="summary-card">
-            <div className="summary-label">Transactions</div>
-            <div className="summary-value">
-              {report.summary.totalTransactions}
-            </div>
-          </div>
-
-          <div className="summary-card">
-            <div className="summary-label">Settlements Needed</div>
-            <div
-              className="summary-value"
-              style={{ color: "var(--secondary)" }}
+      <div className="min-h-screen bg-gray-50 py-10 px-4">
+        <div className="max-w-6xl mx-auto space-y-10">
+          {/* Header */}
+          <div>
+            <button
+              onClick={() => navigate(`/tour/${id}`)}
+              className="mb-4 text-sm text-indigo-600 hover:underline"
             >
-              {report.settlements.length}
-            </div>
-          </div>
-        </div>
+              ← Back to Tour
+            </button>
 
-        {/* Category Breakdown */}
-        <div className="report-section">
-          <h2 className="report-section-title">Category Breakdown</h2>
-          <div className="card">
-            <div style={{ display: "grid", gap: "0.75rem" }}>
+            <h1 className="text-3xl font-bold text-gray-800">
+              Final Settlement Report
+            </h1>
+            <p className="text-gray-500 mt-2">
+              {report.tour.name} • {report.tour.destination}
+            </p>
+          </div>
+
+          {/* Summary */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <SummaryCard
+              label="Total Expenses"
+              value={`₹${report.summary.totalExpenses.toFixed(2)}`}
+            />
+            <SummaryCard
+              label="Total Members"
+              value={report.summary.totalMembers}
+            />
+            <SummaryCard
+              label="Transactions"
+              value={report.summary.totalTransactions}
+            />
+            <SummaryCard
+              label="Settlements Needed"
+              value={report.settlements.length}
+            />
+          </div>
+
+          {/* Category Breakdown */}
+          <Section title="Category Breakdown">
+            <div className="space-y-4">
               {Object.entries(report.summary.categoryBreakdown).map(
                 ([category, amount]) => {
                   const percentage =
                     (amount / report.summary.totalExpenses) * 100;
-                  const categoryColors = {
-                    food: "#f59e0b",
-                    transport: "#3b82f6",
-                    accommodation: "#8b5cf6",
-                    entertainment: "#ec4899",
-                    shopping: "#10b981",
-                    other: "var(--gray-400)",
-                  };
 
                   return (
                     <div key={category}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        <span
-                          style={{
-                            textTransform: "capitalize",
-                            fontWeight: 500,
-                          }}
-                        >
+                      <div className="flex justify-between mb-1">
+                        <span className="capitalize font-medium">
                           {category}
                         </span>
-                        <span style={{ fontWeight: 600 }}>
+                        <span className="font-semibold">
                           ₹{amount.toFixed(2)}
                         </span>
                       </div>
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "8px",
-                          backgroundColor: "var(--gray-200)",
-                          borderRadius: "4px",
-                          overflow: "hidden",
-                        }}
-                      >
+
+                      <div className="w-full h-2 bg-gray-200 rounded-full">
                         <div
-                          style={{
-                            width: `${percentage}%`,
-                            height: "100%",
-                            backgroundColor: categoryColors[category],
-                            transition: "width 0.3s",
-                          }}
+                          className="h-2 bg-indigo-500 rounded-full transition-all"
+                          style={{ width: `${percentage}%` }}
                         />
                       </div>
-                      <div
-                        style={{
-                          fontSize: "0.8125rem",
-                          color: "var(--gray-600)",
-                          marginTop: "0.25rem",
-                        }}
-                      >
+
+                      <p className="text-xs text-gray-500 mt-1">
                         {percentage.toFixed(1)}% of total
-                      </div>
+                      </p>
                     </div>
                   );
-                }
+                },
               )}
             </div>
-          </div>
-        </div>
+          </Section>
 
-        {/* Member Balances */}
-        <div className="report-section">
-          <h2 className="report-section-title">Member Balances</h2>
-          <div style={{ display: "grid", gap: "1rem" }}>
-            {report.memberBalances
-              .sort((a, b) => b.netBalance - a.netBalance)
-              .map((balance) => {
-                const isPositive = balance.netBalance > 0.01;
-                const isNegative = balance.netBalance < -0.01;
-                const balanceClass = isPositive
-                  ? "positive"
-                  : isNegative
-                  ? "negative"
-                  : "neutral";
+          {/* Member Balances */}
+          <Section title="Member Balances">
+            <div className="space-y-4">
+              {report.memberBalances
+                .sort((a, b) => b.netBalance - a.netBalance)
+                .map((balance) => {
+                  const isPositive = balance.netBalance > 0.01;
+                  const isNegative = balance.netBalance < -0.01;
 
-                return (
-                  <div
-                    key={balance.user.id}
-                    className={`balance-card ${balanceClass}`}
-                  >
+                  return (
                     <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
+                      key={balance.user.id}
+                      className="bg-white p-5 rounded-xl shadow-sm flex justify-between items-center"
                     >
                       <div>
-                        <div
-                          style={{
-                            fontWeight: 600,
-                            fontSize: "1.125rem",
-                            marginBottom: "0.25rem",
-                          }}
-                        >
+                        <h3 className="font-semibold text-lg">
                           {balance.user.name}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "0.875rem",
-                            color: "var(--gray-600)",
-                          }}
-                        >
+                        </h3>
+                        <p className="text-sm text-gray-500">
                           Paid: ₹{balance.totalPaid.toFixed(2)} • Share: ₹
                           {balance.totalShare.toFixed(2)}
-                        </div>
+                        </p>
                       </div>
-                      <div style={{ textAlign: "right" }}>
-                        <div
-                          style={{
-                            fontSize: "1.5rem",
-                            fontWeight: 700,
-                            color: isPositive
-                              ? "var(--secondary)"
+
+                      <div className="text-right">
+                        <p
+                          className={`text-xl font-bold ${
+                            isPositive
+                              ? "text-green-600"
                               : isNegative
-                              ? "var(--danger)"
-                              : "var(--gray-600)",
-                          }}
+                                ? "text-red-600"
+                                : "text-gray-600"
+                          }`}
                         >
                           {isPositive ? "+" : ""}₹
                           {Math.abs(balance.netBalance).toFixed(2)}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "0.8125rem",
-                            color: "var(--gray-600)",
-                          }}
-                        >
+                        </p>
+                        <p className="text-xs text-gray-500">
                           {isPositive
                             ? "To receive"
                             : isNegative
-                            ? "To pay"
-                            : "Settled"}
-                        </div>
+                              ? "To pay"
+                              : "Settled"}
+                        </p>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-          </div>
-        </div>
-
-        {/* Settlement Instructions */}
-        <div className="report-section">
-          <h2 className="report-section-title">
-            Settlement Instructions
-            {report.settlements.length === 0 && " ✅"}
-          </h2>
-
-          {report.settlements.length === 0 ? (
-            <div
-              className="card"
-              style={{ textAlign: "center", padding: "3rem 2rem" }}
-            >
-              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🎉</div>
-              <h3
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: 600,
-                  marginBottom: "0.5rem",
-                }}
-              >
-                All Settled!
-              </h3>
-              <p style={{ color: "var(--gray-600)" }}>
-                No payments needed - everyone's expenses are balanced.
-              </p>
+                  );
+                })}
             </div>
-          ) : (
-            <>
-              <div
-                className="alert alert-info"
-                style={{ marginBottom: "1rem" }}
-              >
-                💡 Complete these {report.settlements.length} payment
-                {report.settlements.length > 1 ? "s" : ""} to settle all
-                expenses
+          </Section>
+
+          {/* Settlement Instructions */}
+          <Section title="Settlement Instructions">
+            {report.settlements.length === 0 ? (
+              <div className="bg-white p-10 rounded-xl shadow-sm text-center">
+                <div className="text-4xl mb-4">🎉</div>
+                <h3 className="text-xl font-semibold mb-2">All Settled!</h3>
+                <p className="text-gray-500">
+                  No payments needed - everyone's expenses are balanced.
+                </p>
               </div>
-
-              <div style={{ display: "grid", gap: "1rem" }}>
+            ) : (
+              <div className="space-y-4">
                 {report.settlements.map((settlement, index) => (
-                  <div key={index} className="settlement-card">
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr auto 1fr",
-                        gap: "1rem",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div>
-                        <div
-                          style={{
-                            fontWeight: 600,
-                            fontSize: "1.125rem",
-                            marginBottom: "0.25rem",
-                          }}
-                        >
-                          {settlement.from.name}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "0.875rem",
-                            color: "var(--gray-600)",
-                          }}
-                        >
-                          Sender
-                        </div>
-                      </div>
+                  <div
+                    key={index}
+                    className="bg-white p-6 rounded-xl shadow-sm flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-semibold">{settlement.from.name}</p>
+                      <p className="text-xs text-gray-500">Sender</p>
+                    </div>
 
-                      <div style={{ textAlign: "center" }}>
-                        <div
-                          style={{ fontSize: "2rem", color: "var(--primary)" }}
-                        >
-                          →
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "1.5rem",
-                            fontWeight: 700,
-                            color: "var(--danger)",
-                            marginTop: "0.5rem",
-                          }}
-                        >
-                          ₹{settlement.amount.toFixed(2)}
-                        </div>
-                      </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-red-500">
+                        ₹{settlement.amount.toFixed(2)}
+                      </p>
+                    </div>
 
-                      <div style={{ textAlign: "right" }}>
-                        <div
-                          style={{
-                            fontWeight: 600,
-                            fontSize: "1.125rem",
-                            marginBottom: "0.25rem",
-                          }}
-                        >
-                          {settlement.to.name}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "0.875rem",
-                            color: "var(--gray-600)",
-                          }}
-                        >
-                          Receiver
-                        </div>
-                      </div>
+                    <div className="text-right">
+                      <p className="font-semibold">{settlement.to.name}</p>
+                      <p className="text-xs text-gray-500">Receiver</p>
                     </div>
                   </div>
                 ))}
               </div>
-            </>
-          )}
-        </div>
+            )}
+          </Section>
 
-        {/* All Expenses */}
-        <div className="report-section">
-          <h2 className="report-section-title">All Expenses</h2>
-          <div className="card">
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ borderBottom: "2px solid var(--gray-200)" }}>
-                    <th
-                      style={{
-                        padding: "0.75rem",
-                        textAlign: "left",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Date
-                    </th>
-                    <th
-                      style={{
-                        padding: "0.75rem",
-                        textAlign: "left",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Description
-                    </th>
-                    <th
-                      style={{
-                        padding: "0.75rem",
-                        textAlign: "left",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Category
-                    </th>
-                    <th
-                      style={{
-                        padding: "0.75rem",
-                        textAlign: "left",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Paid By
-                    </th>
-                    <th
-                      style={{
-                        padding: "0.75rem",
-                        textAlign: "right",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Amount
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {report.expenses.map((expense) => (
-                    <tr
-                      key={expense.id}
-                      style={{ borderBottom: "1px solid var(--gray-200)" }}
-                    >
-                      <td
-                        style={{
-                          padding: "0.75rem",
-                          fontSize: "0.875rem",
-                          color: "var(--gray-600)",
-                        }}
-                      >
-                        {format(new Date(expense.date), "MMM dd, yyyy")}
-                      </td>
-                      <td style={{ padding: "0.75rem", fontWeight: 500 }}>
-                        {expense.description}
-                      </td>
-                      <td style={{ padding: "0.75rem" }}>
-                        <span
-                          className={`badge badge-${
-                            expense.category === "food" ? "warning" : "primary"
-                          }`}
-                        >
-                          {expense.category}
-                        </span>
-                      </td>
-                      <td style={{ padding: "0.75rem", fontSize: "0.875rem" }}>
-                        {expense.paidBy.name}
-                      </td>
-                      <td
-                        style={{
-                          padding: "0.75rem",
-                          textAlign: "right",
-                          fontWeight: 600,
-                        }}
-                      >
-                        ₹{expense.amount.toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          {/* Print */}
+          <div className="text-center">
+            <button
+              onClick={() => window.print()}
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
+            >
+              🖨️ Print Report
+            </button>
           </div>
-        </div>
-
-        {/* Print Button */}
-        <div style={{ textAlign: "center", marginTop: "2rem" }}>
-          <button onClick={() => window.print()} className="btn btn-primary">
-            🖨️ Print Report
-          </button>
         </div>
       </div>
     </>
   );
 };
+
+const SummaryCard = ({ label, value }) => (
+  <div className="bg-white p-6 rounded-xl shadow-sm">
+    <p className="text-sm text-gray-500">{label}</p>
+    <p className="text-2xl font-bold text-indigo-600 mt-2">{value}</p>
+  </div>
+);
+
+const Section = ({ title, children }) => (
+  <div>
+    <h2 className="text-xl font-semibold mb-4 text-gray-800">{title}</h2>
+    {children}
+  </div>
+);
 
 export default FinalReportPage;

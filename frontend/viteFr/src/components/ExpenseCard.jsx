@@ -3,48 +3,60 @@ import { format } from "date-fns";
 const ExpenseCard = ({ expense, onDelete, canDelete }) => {
   const getCategoryColor = (category) => {
     const colors = {
-      food: "border-l-yellow-500",
-      transport: "border-l-blue-500",
-      accommodation: "border-l-purple-500",
-      entertainment: "border-l-pink-500",
-      shopping: "border-l-green-500",
-      other: "border-l-gray-400",
+      food: "border-yellow-400",
+      transport: "border-blue-400",
+      accommodation: "border-purple-400",
+      entertainment: "border-pink-400",
+      shopping: "border-green-400",
+      other: "border-gray-300",
     };
     return colors[category] || colors.other;
   };
 
   return (
-    <div className={`expense-card ${getCategoryColor(expense.category)}`}>
-      <div className="expense-card-header">
+    <div
+      className={`bg-white rounded-2xl shadow-sm border-l-4 ${getCategoryColor(
+        expense.category,
+      )} p-6 transition hover:shadow-md`}
+    >
+      {/* Top Section */}
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <div className="expense-description">{expense.description}</div>
-          <span
-            className={`badge badge-${
-              expense.category === "food" ? "warning" : "primary"
-            } mt-2 text-[0.7rem]`}
-          >
+          <h3 className="font-semibold text-lg mb-2">{expense.description}</h3>
+
+          <span className="inline-block text-xs font-medium bg-gray-100 text-gray-600 px-3 py-1 rounded-full capitalize">
             {expense.category}
           </span>
         </div>
-        <div className="expense-amount">₹{expense.amount.toFixed(2)}</div>
+
+        <div className="text-xl font-bold text-rose-600">
+          ₹{expense.amount.toFixed(2)}
+        </div>
       </div>
 
-      <div className="expense-details">
-        <div className="expense-detail-row">
+      {/* Details */}
+      <div className="space-y-2 text-sm text-gray-600">
+        <div className="flex items-center gap-2">
           <span>💳</span>
           <span>
-            Paid by: <strong>{expense.paidBy?.name || "Unknown"}</strong>
+            Paid by:{" "}
+            <span className="font-medium text-gray-800">
+              {expense.paidBy?.name || "Unknown"}
+            </span>
           </span>
         </div>
 
-        <div className="expense-detail-row">
+        <div className="flex items-center gap-2">
           <span>👥</span>
           <span>
-            Split among: {expense.participants?.map((p) => p.name).join(", ")}
+            Split among:{" "}
+            <span className="text-gray-800">
+              {expense.participants?.map((p) => p.name).join(", ")}
+            </span>
           </span>
         </div>
 
-        <div className="expense-detail-row">
+        <div className="flex items-center gap-2">
           <span>📅</span>
           <span>
             {format(new Date(expense.date), "MMM dd, yyyy - hh:mm a")}
@@ -52,15 +64,16 @@ const ExpenseCard = ({ expense, onDelete, canDelete }) => {
         </div>
 
         {expense.createdBy && (
-          <div className="expense-detail-row">
+          <div className="flex items-center gap-2">
             <span>✏️</span>
             <span>Added by: {expense.createdBy.name}</span>
           </div>
         )}
       </div>
 
+      {/* Delete */}
       {canDelete && onDelete && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-6 pt-4 border-t">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -70,7 +83,7 @@ const ExpenseCard = ({ expense, onDelete, canDelete }) => {
                 onDelete(expense._id);
               }
             }}
-            className="btn btn-sm btn-danger"
+            className="text-sm px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
           >
             Delete
           </button>

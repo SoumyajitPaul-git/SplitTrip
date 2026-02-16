@@ -47,98 +47,124 @@ const CreateTourPage = () => {
   return (
     <>
       <Navbar />
-      <div className="container pt-8 pb-8 max-w-2xl">
-        <h1 className="page-title mb-8">Create New Tour</h1>
 
-        <div className="card">
-          {error && <div className="alert alert-error">{error}</div>}
+      <div className="bg-white">
+        <div className="max-w-2xl mx-auto px-6 py-14">
+          <h1 className="text-4xl font-semibold text-gray-900 mb-10">
+            Create a new trip
+          </h1>
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label">Tour Name *</label>
-              <input
-                type="text"
-                name="name"
-                className="form-control"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="e.g., Goa Trip 2024"
-              />
-            </div>
+          <div className="border border-gray-200 rounded-3xl p-8">
+            {error && (
+              <div className="mb-6 bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl text-sm">
+                {error}
+              </div>
+            )}
 
-            <div className="form-group">
-              <label className="form-label">Description</label>
-              <textarea
-                name="description"
-                className="form-control"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Add details about your tour..."
-                rows={3}
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Destination *</label>
-              <input
-                type="text"
-                name="destination"
-                className="form-control"
-                value={formData.destination}
-                onChange={handleChange}
-                required
-                placeholder="e.g., Goa, India"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="form-group">
-                <label className="form-label">Start Date *</label>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Tour Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Trip name *
+                </label>
                 <input
-                  type="date"
-                  name="startDate"
-                  className="form-control"
-                  value={formData.startDate}
+                  type="text"
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
                   required
+                  placeholder="e.g., Goa Trip 2024"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-rose-200 focus:border-rose-500 outline-none"
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label">End Date *</label>
-                <input
-                  type="date"
-                  name="endDate"
-                  className="form-control"
-                  value={formData.endDate}
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
                   onChange={handleChange}
-                  required
+                  rows={3}
+                  placeholder="Add details about your trip..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-rose-200 focus:border-rose-500 outline-none resize-none"
                 />
               </div>
-            </div>
 
-            <div className="flex gap-4 justify-end mt-8">
-              <button
-                type="button"
-                onClick={() => navigate("/")}
-                className="btn btn-outline"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? "Creating..." : "Create Tour"}
-              </button>
-            </div>
-          </form>
+              {/* Destination */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Destination *
+                </label>
+                <input
+                  type="text"
+                  name="destination"
+                  value={formData.destination}
+                  onChange={handleChange}
+                  required
+                  placeholder="e.g., Goa, India"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-rose-200 focus:border-rose-500 outline-none"
+                />
+              </div>
+
+              {/* Dates */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Start date *
+                  </label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-rose-200 focus:border-rose-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    End date *
+                  </label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-rose-200 focus:border-rose-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex justify-end gap-4 pt-6">
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard")}
+                  className="px-6 py-2.5 rounded-full border border-gray-300 hover:bg-gray-100 transition text-sm font-medium"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-8 py-2.5 rounded-full bg-rose-500 text-white hover:bg-rose-600 transition text-sm font-medium disabled:opacity-50"
+                >
+                  {loading ? "Creating..." : "Create trip"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>
   );
+
 };
 
 export default CreateTourPage;

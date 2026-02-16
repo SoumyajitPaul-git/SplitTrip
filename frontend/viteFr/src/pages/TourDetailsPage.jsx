@@ -96,7 +96,9 @@ const TourDetailsPage = () => {
     return (
       <>
         <Navbar />
-        <div className="spinner"></div>
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <div className="w-10 h-10 border-4 border-gray-200 border-t-rose-500 rounded-full animate-spin"></div>
+        </div>
       </>
     );
   }
@@ -105,9 +107,14 @@ const TourDetailsPage = () => {
     return (
       <>
         <Navbar />
-        <div className="container" style={{ paddingTop: "2rem" }}>
-          <div className="alert alert-error">{error || "Tour not found"}</div>
-          <button onClick={() => navigate("/")} className="btn btn-primary">
+        <div className="max-w-5xl mx-auto px-4 py-10">
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6">
+            {error || "Tour not found"}
+          </div>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="px-6 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition"
+          >
             Back to Dashboard
           </button>
         </div>
@@ -115,388 +122,230 @@ const TourDetailsPage = () => {
     );
   }
 
-  return (
-    <>
-      <Navbar />
-      <div
-        className="container"
-        style={{ paddingTop: "2rem", paddingBottom: "2rem" }}
-      >
-        {/* Tour Header */}
-        <div className="card" style={{ marginBottom: "2rem" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: "1rem",
-            }}
-          >
-            <div>
-              <h1
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: 700,
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {tour.name}
-              </h1>
-              <p style={{ color: "var(--gray-600)", fontSize: "1.125rem" }}>
-                📍 {tour.destination}
-              </p>
-            </div>
-            <span
-              className={`badge ${getStatusBadge(tour.status)}`}
-              style={{ fontSize: "0.875rem" }}
-            >
-              {tour.status}
-            </span>
+return (
+  <>
+    <Navbar />
+
+    <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
+      {/* Header Card */}
+      <div className="bg-white rounded-2xl shadow-sm border p-8 space-y-6">
+        {/* Top Row */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">{tour.name}</h1>
+            <p className="text-gray-500 text-lg">📍 {tour.destination}</p>
           </div>
 
-          {tour.description && (
-            <p style={{ color: "var(--gray-600)", marginBottom: "1rem" }}>
-              {tour.description}
-            </p>
-          )}
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "1rem",
-              padding: "1rem",
-              backgroundColor: "var(--gray-50)",
-              borderRadius: "var(--border-radius)",
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontSize: "0.8125rem",
-                  color: "var(--gray-600)",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Duration
-              </div>
-              <div style={{ fontWeight: 600 }}>
-                {format(new Date(tour.startDate), "MMM dd")} -{" "}
-                {format(new Date(tour.endDate), "MMM dd, yyyy")}
-              </div>
-            </div>
-
-            <div>
-              <div
-                style={{
-                  fontSize: "0.8125rem",
-                  color: "var(--gray-600)",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Captain
-              </div>
-              <div style={{ fontWeight: 600 }}>{tour.captain.name}</div>
-            </div>
-
-            <div>
-              <div
-                style={{
-                  fontSize: "0.8125rem",
-                  color: "var(--gray-600)",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Members
-              </div>
-              <div style={{ fontWeight: 600 }}>
-                {tour.members.length} people
-              </div>
-            </div>
-
-            <div>
-              <div
-                style={{
-                  fontSize: "0.8125rem",
-                  color: "var(--gray-600)",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Total Expenses
-              </div>
-              <div style={{ fontWeight: 600, color: "var(--primary)" }}>
-                ₹{totalExpenses.toFixed(2)}
-              </div>
-            </div>
-
-            <div className="">
-              Joining Code
-              <div style={{ fontWeight: 600, color: "var(--primary)" }}>
-                {tour.joinCode}
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              marginTop: "1rem",
-              padding: "1rem",
-              backgroundColor: "var(--primary)",
-              color: "white",
-              borderRadius: "var(--border-radius)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontSize: "0.8125rem",
-                  opacity: 0.9,
-                  marginBottom: "0.25rem",
-                }}
-              >
-                Join Code
-              </div>
-              <div
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: 700,
-                  fontFamily: "monospace",
-                }}
-              >
-                {tour.joinCode}
-              </div>
-            </div>
-            <button
-              onClick={copyJoinCode}
-              className="btn"
-              style={{ backgroundColor: "white", color: "var(--primary)" }}
-            >
-              Copy Code
-            </button>
-          </div>
-
-          {isCaptain && (
-            <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>
-              {tour.status === "planning" && (
-                <button
-                  onClick={() => handleUpdateStatus("active")}
-                  className="btn btn-secondary btn-sm"
-                >
-                  Start Tour
-                </button>
-              )}
-              {tour.status === "active" && (
-                <button
-                  onClick={() => handleUpdateStatus("completed")}
-                  className="btn btn-primary btn-sm"
-                >
-                  Complete Tour
-                </button>
-              )}
-            </div>
-          )}
+          <span className="px-4 py-1.5 text-sm font-medium rounded-full bg-rose-100 text-rose-600 capitalize">
+            {tour.status}
+          </span>
         </div>
 
-        {/* Tabs */}
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            borderBottom: "2px solid var(--gray-200)",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <button
-            onClick={() => setActiveTab("expenses")}
-            style={{
-              padding: "0.75rem 1.5rem",
-              background: "none",
-              border: "none",
-              borderBottom:
-                activeTab === "expenses" ? "2px solid var(--primary)" : "none",
-              color:
-                activeTab === "expenses" ? "var(--primary)" : "var(--gray-600)",
-              fontWeight: activeTab === "expenses" ? 600 : 400,
-              cursor: "pointer",
-              marginBottom: "-2px",
-            }}
-          >
-            Expenses ({expenses.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("members")}
-            style={{
-              padding: "0.75rem 1.5rem",
-              background: "none",
-              border: "none",
-              borderBottom:
-                activeTab === "members" ? "2px solid var(--primary)" : "none",
-              color:
-                activeTab === "members" ? "var(--primary)" : "var(--gray-600)",
-              fontWeight: activeTab === "members" ? 600 : 400,
-              cursor: "pointer",
-              marginBottom: "-2px",
-            }}
-          >
-            Members ({tour.members.length})
-          </button>
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === "expenses" ? (
-          <>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "1.5rem",
-              }}
-            >
-              <h2 style={{ fontSize: "1.5rem", fontWeight: 600 }}>Expenses</h2>
-              <div style={{ display: "flex", gap: "0.75rem" }}>
-                <button
-                  onClick={() => navigate(`/tour/${id}/report`)}
-                  className="btn btn-outline"
-                >
-                  View Report
-                </button>
-                <button
-                  onClick={() => setShowExpenseModal(true)}
-                  className="btn btn-primary"
-                >
-                  + Add Expense
-                </button>
-              </div>
-            </div>
-
-            {expenses.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-state-icon">💰</div>
-                <h3 className="empty-state-title">No expenses yet</h3>
-                <p>Start adding expenses to track your tour spending</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1">
-                {expenses.map((expense) => (
-                  <ExpenseCard
-                    key={expense._id}
-                    expense={expense}
-                    onDelete={handleDeleteExpense}
-                    canDelete={expense.createdBy._id === user.id || isCaptain}
-                  />
-                ))}
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: 600,
-                marginBottom: "1.5rem",
-              }}
-            >
-              Members
-            </h2>
-            <div className="grid grid-cols-1 grid-cols-2">
-              {tour.members.map((member, index) => (
-                <div key={member.user._id} className="card">
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "48px",
-                        height: "48px",
-                        borderRadius: "50%",
-                        backgroundColor: "var(--primary)",
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "1.25rem",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {member.user.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 600, fontSize: "1rem" }}>
-                        {member.user.name}
-                        {member.user._id === tour.captain._id && (
-                          <span
-                            className="badge badge-warning"
-                            style={{ marginLeft: "0.5rem" }}
-                          >
-                            Captain
-                          </span>
-                        )}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "0.875rem",
-                          color: "var(--gray-600)",
-                        }}
-                      >
-                        {member.user.email}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "0.8125rem",
-                          color: "var(--gray-500)",
-                          marginTop: "0.25rem",
-                        }}
-                      >
-                        Joined{" "}
-                        {format(new Date(member.joinedAt), "MMM dd, yyyy")}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
+        {tour.description && (
+          <p className="text-gray-600">{tour.description}</p>
         )}
 
-        {/* Add Expense Modal */}
-        {showExpenseModal && (
-          <div
-            className="modal-overlay"
-            onClick={() => setShowExpenseModal(false)}
-          >
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2 className="modal-title">Add New Expense</h2>
-                <button
-                  className="modal-close"
-                  onClick={() => setShowExpenseModal(false)}
-                >
-                  ×
-                </button>
-              </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-gray-50 p-6 rounded-xl text-sm">
+          <div>
+            <p className="text-gray-400 mb-1">Duration</p>
+            <p className="font-semibold">
+              {format(new Date(tour.startDate), "MMM dd")} –{" "}
+              {format(new Date(tour.endDate), "MMM dd, yyyy")}
+            </p>
+          </div>
 
-              <div className="modal-body">
-                <ExpenseForm
-                  members={tour.members}
-                  onSubmit={handleAddExpense}
-                  onCancel={() => setShowExpenseModal(false)}
-                />
-              </div>
-            </div>
+          <div>
+            <p className="text-gray-400 mb-1">Captain</p>
+            <p className="font-semibold">{tour.captain.name}</p>
+          </div>
+
+          <div>
+            <p className="text-gray-400 mb-1">Members</p>
+            <p className="font-semibold">{tour.members.length} people</p>
+          </div>
+
+          <div>
+            <p className="text-gray-400 mb-1">Total</p>
+            <p className="font-semibold text-rose-600">
+              ₹{totalExpenses.toFixed(2)}
+            </p>
+          </div>
+        </div>
+
+        {/* Join Code */}
+        <div className="flex items-center justify-between bg-rose-500 text-white p-6 rounded-xl">
+          <div>
+            <p className="text-sm opacity-80 mb-1">Join Code</p>
+            <p className="text-2xl font-bold font-mono">{tour.joinCode}</p>
+          </div>
+
+          <button
+            onClick={copyJoinCode}
+            className="bg-white text-rose-600 px-5 py-2 rounded-lg font-medium hover:bg-gray-100 transition"
+          >
+            Copy
+          </button>
+        </div>
+
+        {/* Captain Actions */}
+        {isCaptain && (
+          <div className="flex gap-3">
+            {tour.status === "planning" && (
+              <button
+                onClick={() => handleUpdateStatus("active")}
+                className="px-5 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition"
+              >
+                Start Tour
+              </button>
+            )}
+
+            {tour.status === "active" && (
+              <button
+                onClick={() => handleUpdateStatus("completed")}
+                className="px-5 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition"
+              >
+                Complete Tour
+              </button>
+            )}
           </div>
         )}
       </div>
-    </>
-  );
+
+      {/* Tabs */}
+      <div className="border-b flex gap-8 text-sm font-medium">
+        <button
+          onClick={() => setActiveTab("expenses")}
+          className={`pb-3 ${
+            activeTab === "expenses"
+              ? "border-b-2 border-rose-500 text-rose-600"
+              : "text-gray-500"
+          }`}
+        >
+          Expenses ({expenses.length})
+        </button>
+
+        <button
+          onClick={() => setActiveTab("members")}
+          className={`pb-3 ${
+            activeTab === "members"
+              ? "border-b-2 border-rose-500 text-rose-600"
+              : "text-gray-500"
+          }`}
+        >
+          Members ({tour.members.length})
+        </button>
+      </div>
+
+      {/* Expenses Tab */}
+      {activeTab === "expenses" ? (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-semibold">Expenses</h2>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => navigate(`/tour/${id}/report`)}
+                className="px-5 py-2 border rounded-lg hover:bg-gray-50 transition"
+              >
+                View Report
+              </button>
+
+              <button
+                onClick={() => setShowExpenseModal(true)}
+                className="px-5 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition"
+              >
+                + Add Expense
+              </button>
+            </div>
+          </div>
+
+          {expenses.length === 0 ? (
+            <div className="text-center py-16 bg-gray-50 rounded-xl">
+              <div className="text-4xl mb-4">💰</div>
+              <h3 className="text-lg font-semibold mb-2">No expenses yet</h3>
+              <p className="text-gray-500">
+                Start adding expenses to track your tour spending.
+              </p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6">
+              {expenses.map((expense) => (
+                <ExpenseCard
+                  key={expense._id}
+                  expense={expense}
+                  onDelete={handleDeleteExpense}
+                  canDelete={expense.createdBy._id === user.id || isCaptain}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Members Tab */
+        <div className="grid md:grid-cols-2 gap-6">
+          {tour.members.map((member) => (
+            <div
+              key={member.user._id}
+              className="bg-white border rounded-xl p-6 flex items-center gap-5 shadow-sm"
+            >
+              <div className="w-12 h-12 rounded-full bg-rose-500 text-white flex items-center justify-center font-semibold text-lg">
+                {member.user.name.charAt(0).toUpperCase()}
+              </div>
+
+              <div>
+                <div className="font-semibold flex items-center gap-2">
+                  {member.user.name}
+                  {member.user._id === tour.captain._id && (
+                    <span className="text-xs bg-amber-100 text-amber-600 px-2 py-1 rounded-full">
+                      Captain
+                    </span>
+                  )}
+                </div>
+
+                <p className="text-sm text-gray-500">{member.user.email}</p>
+
+                <p className="text-xs text-gray-400 mt-1">
+                  Joined {format(new Date(member.joinedAt), "MMM dd, yyyy")}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Modal */}
+      {showExpenseModal && (
+        <div
+          onClick={() => setShowExpenseModal(false)}
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl p-8 w-full max-w-lg shadow-xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Add New Expense</h2>
+              <button
+                onClick={() => setShowExpenseModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <ExpenseForm
+              members={tour.members}
+              onSubmit={handleAddExpense}
+              onCancel={() => setShowExpenseModal(false)}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  </>
+);
+
 };
 
 export default TourDetailsPage;
