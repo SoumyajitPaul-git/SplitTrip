@@ -7,9 +7,13 @@
   <img src="https://img.shields.io/badge/Database-MongoDB-green?style=for-the-badge&logo=mongodb" />
 </div>
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://split-trip-frontend.vercel.app)
-
 A full-stack web application for tracking and settling group tour expenses. Perfect for friends traveling together who want to easily split costs and settle payments.
+
+## 🌐 Live Demo
+
+🔗 https://split-trip-frontend.vercel.app
+
+---
 
 ## 📸 Application Preview
 
@@ -261,38 +265,6 @@ Frontend will run on `http://localhost:5173`
 6. **Settle Payments**
    - Follow settlement instructions to minimize transactions
    - Complete payments outside the app
-
-## Settlement Algorithm
-
-The app uses a greedy algorithm to minimize the number of transactions needed:
-
-1. Calculate net balance for each member (amount paid - share owed)
-2. Separate members into creditors (to receive) and debtors (to pay)
-3. Match largest creditor with largest debtor
-4. Settle the smaller amount
-5. Repeat until all balanced
-
-This reduces complexity from O(n²) to approximately O(n log n) transactions.
-
-## Security Features
-
-- Passwords hashed with bcrypt
-- JWT-based authentication
-- Protected routes require valid token
-- Authorization checks for sensitive operations
-- Input validation on all forms
-
-## Future Enhancements
-
-- [ ] Custom split ratios (not just equal)
-- [ ] Receipt image uploads
-- [ ] Export reports to PDF
-- [ ] Email notifications
-- [ ] Multi-currency support
-- [ ] Payment integration (UPI, PayPal)
-- [ ] Expense editing history
-- [ ] Tour templates
-- [ ] Mobile app
 
 ## Contributing
 
